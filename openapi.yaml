@@ -1,0 +1,35 @@
+openapi: 3.1.0
+info:
+  title: Vector Store API
+  version: "1.0"
+
+servers:
+  - url: https://presumably-assured-hookworm.ngrok.app
+
+paths:
+  /query-vector:
+    post:
+      operationId: queryVector
+      summary: Query the vector store
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                query:
+                  type: string
+      responses:
+        '200':
+          description: Results from the vector store
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  results:
+                    type: array
+                    items:
+                      type: string
+
