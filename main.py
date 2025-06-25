@@ -25,19 +25,13 @@ async def query_vector(request: Request):
             content=query
         )
         
-        # Create an assistant with your vector store
-        assistant = client.beta.assistants.create(
-            name="Vector Store Assistant",
-            instructions="You help answer questions using the vector store.",
-            model="gpt-4o-mini",
-            tools=[{"type": "file_search"}],
-            tool_resources={"file_search": {"vector_store_ids": ["vs_68551a089ac481918cb74bad43bad40a"]}}
-        )
+        # Use your existing assistant (no more creating new ones!)
+        assistant_id = "asst_7ubnxrCiblgIUtQwFhKZb46g"
         
-        # Run the assistant
+        # Run with your existing assistant
         run = client.beta.threads.runs.create(
             thread_id=thread.id,
-            assistant_id=assistant.id
+            assistant_id=assistant_id
         )
         
         # Wait for completion and get response
@@ -57,13 +51,14 @@ async def query_vector(request: Request):
 @app.get("/debug-api")
 async def debug_api():
     try:
-        # Test if client can list vector stores
-        vector_stores = client.beta.vector_stores.list()
+        # Test if client can access your specific assistant
+        assistant = client.beta.assistants.retrieve("asst_7ubnxrCiblgIUtQwFhKZb46g")
         return {
             "api_key_set": os.getenv("OPENAI_API_KEY") is not None,
             "api_key_preview": os.getenv("OPENAI_API_KEY")[:20] + "..." if os.getenv("OPENAI_API_KEY") else "None",
-            "vector_stores_found": len(vector_stores.data),
-            "vector_store_ids": [vs.id for vs in vector_stores.data]
+            "assistant_id": assistant.id,
+            "assistant_name": assistant.name,
+            "assistant_tools": [tool.type for tool in assistant.tools]
         }
     except Exception as e:
         return {"error": str(e)}
