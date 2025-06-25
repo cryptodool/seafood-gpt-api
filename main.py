@@ -70,3 +70,4 @@ async def serve_manifest():
 @app.get("/openapi.yaml")
 async def serve_openapi():
     return FileResponse("openapi.yaml", media_type="text/yaml")
+# Force assistant refresh Wed Jun 25 16:40:55 +04 2025
